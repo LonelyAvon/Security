@@ -1,0 +1,24 @@
+﻿<Window x:Class="WpfApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        WindowStartupLocation="CenterScreen"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="700">
+    <Grid RenderTransformOrigin="0.496,0.322">
+        <TextBlock HorizontalAlignment="Left" Margin="154,63,0,0" TextWrapping="Wrap" Text="Тип пользователя" VerticalAlignment="Top" Height="25" Width="145" FontSize="16"/>
+        <TextBlock HorizontalAlignment="Left" Margin="154,122,0,0" TextWrapping="Wrap" Text="Логин" VerticalAlignment="Top" Height="25" Width="50" FontSize="16"/>
+        <TextBlock HorizontalAlignment="Left" Margin="154,179,0,0" TextWrapping="Wrap" Text="Пароль" VerticalAlignment="Top" Height="26" Width="61" FontSize="16"/>
+        <TextBlock HorizontalAlignment="Left" Margin="154,237,0,0" TextWrapping="Wrap" Text="Секретное слово " VerticalAlignment="Top" Height="25" Width="144" FontSize="16"/>
+        <ComboBox x:Name="UserType" HorizontalAlignment="Left" Margin="363,57,0,0" VerticalAlignment="Top" Width="178" AutomationProperties.IsColumnHeader="True" IsReadOnly="True" Height="35">
+        </ComboBox>
+        <TextBox x:Name="Login" HorizontalAlignment="Left" Height="36" Margin="363,114,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="178"/>
+        <PasswordBox x:Name="Password" HorizontalAlignment="Left" Margin="363,172,0,0" VerticalAlignment="Top" Width="178" Height="36"/>
+        <TextBox x:Name="SecretWord" HorizontalAlignment="Left" Height="36" Margin="363,230,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="178"/>
+        <Button x:Name="AutoButton" Content="Войти в систему" HorizontalAlignment="Left" Margin="280,305,0,0" VerticalAlignment="Top" Width="140" FontSize="16" Click="AutoButton_Click"/>
+        <Button x:Name="RegisterButton" Content="Забыли данные для входа" HorizontalAlignment="Left" Margin="260,349,0,0" VerticalAlignment="Top" Width="180" FontSize="12" Background="White" BorderBrush="White" Foreground="#FF002EFF" FontWeight="Bold"/>
+
+    </Grid>
+</Window>
