@@ -17,7 +17,7 @@ namespace WpfApp1
     public partial class MainWindow : Window
     {
         MD5Hash MD5 = new MD5Hash();
-        private static HttpClient httpClient = new HttpClient();
+        public static HttpClient httpClient = new HttpClient();
         public static string Path = "https://localhost:7244";
         public MainWindow()
         {
@@ -88,33 +88,24 @@ namespace WpfApp1
             var worker = await AutoWorkerAsync(Path, first);
             if (worker!=null)
             {
+                //Проверка на правильность выбранной роли
+                if (worker.Division != UserType.Text)
+                {
+                    MessageBox.Show("Выбран неверный тип пользователя!");
+                    return;
+                }
                 switch(worker.Division)
                 {
                     case "Администрация":
-                        //проверка на идентичность роли в Типе пользователя
-                        if (worker.Division != UserType.Text)
-                        {
-                            MessageBox.Show("Выбран неверный тип пользователя!");
-                            break;
-                        }
                         MessageBox.Show($"Вы зашли под аккаунтом {worker.Division}");
                         Security admin = new Security();
                         admin.Show();
                         break;
                     case "Служба безопасности":
-                        if (worker.Division != UserType.Text)
-                        {
-                            MessageBox.Show("Выбран неверный тип пользователя!");
-                            break;
-                        }
                         MessageBox.Show($"Вы зашли под аккаунтом {worker.Division}");
                         break;
+                    //Страница для остальных рабочих
                     default:
-                        if (worker.Division != UserType.Text)
-                        {
-                            MessageBox.Show("Выбран неверный тип пользователя!");
-                            break;
-                        }
                         MessageBox.Show($"Вы зашли под аккаунтом {worker.Division}");
                         break;
                 }
@@ -122,7 +113,7 @@ namespace WpfApp1
 
         }
         // Метод отправки рабочего на авторизацию и получение полных данных о рабочем в случае успешной авторизации
-        public async Task<Workers> AutoWorkerAsync(string path, Workers work)
+        public static async Task<Workers> AutoWorkerAsync(string path, Workers work)
         {
             HttpResponseMessage response = await httpClient.PostAsJsonAsync
             ($"{path}/Users/Auto/Security", work);
