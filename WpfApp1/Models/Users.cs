@@ -16,7 +16,7 @@ namespace WpfApp1.Models
         }
 
         [Key]
-        public int ID_User { get; set; }
+        public int IdUser { get; set; }
 
         [Required]
         [StringLength(50)]
@@ -26,17 +26,10 @@ namespace WpfApp1.Models
         [StringLength(24)]
         public string Password { get; set; }
 
-        public int? ID_Worker { get; set; }
-
-        [Column(TypeName = "numeric")]
-        public decimal? WorkerCode { get; set; }
-
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GuestsVisits> GuestsVisits { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Requests> Requests { get; set; }
-
-        public virtual Workers Workers { get; set; }
     }
 }

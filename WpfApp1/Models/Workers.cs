@@ -8,21 +8,15 @@ namespace WpfApp1.Models
 
     public partial class Workers
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Workers()
-        {
-            Requests = new HashSet<Requests>();
-            Users = new HashSet<Users>();
-        }
-
         [Key]
-        [Column(Order = 0)]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int ID_Worker { get; set; }
+        public int IdWorker { get; set; }
 
-        [Key]
-        [Column(Order = 1, TypeName = "numeric")]
-        public decimal WorkerCode { get; set; }
+        [Column(TypeName = "numeric")]
+        public decimal? WorkerCode { get; set; }
+
+        [StringLength(50)]
+        public string Password { get; set; }
 
         [Required]
         [StringLength(30)]
@@ -41,10 +35,7 @@ namespace WpfApp1.Models
         [StringLength(30)]
         public string Depart { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Requests> Requests { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Users> Users { get; set; }
+        [StringLength(50)]
+        public string SecretWord { get; set; }
     }
 }

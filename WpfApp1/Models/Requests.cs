@@ -10,9 +10,9 @@ namespace WpfApp1.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int ID_Request { get; set; }
+        public int IdRequest { get; set; }
 
-        public int ID_User { get; set; }
+        public int IdUser { get; set; }
 
         [Required]
         [StringLength(30)]
@@ -34,10 +34,10 @@ namespace WpfApp1.Models
         public string DateOfBirth { get; set; }
 
         [Column(TypeName = "numeric")]
-        public decimal IDSerial { get; set; }
+        public decimal IdSerial { get; set; }
 
         [Column(TypeName = "numeric")]
-        public decimal IDNumber { get; set; }
+        public decimal IdNumber { get; set; }
 
         [Column(TypeName = "date")]
         public DateTime? DateOfVisit { get; set; }
@@ -45,12 +45,10 @@ namespace WpfApp1.Models
         [Column(TypeName = "numeric")]
         public decimal? WorkerCode { get; set; }
 
-        public int? ID_Worker { get; set; }
+        public int? IdWorker { get; set; }
 
         public int? GroupNumber { get; set; }
 
         public virtual Users Users { get; set; }
-
-        public virtual Workers Workers { get; set; }
     }
 }

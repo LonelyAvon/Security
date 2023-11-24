@@ -8,7 +8,7 @@ namespace WpfApp1.Models
     public partial class Model1 : DbContext
     {
         public Model1()
-            : base("name=hiphopContext")
+            : base("name=Model11")
         {
         }
 
@@ -41,11 +41,11 @@ namespace WpfApp1.Models
                 .IsUnicode(false);
 
             modelBuilder.Entity<Requests>()
-                .Property(e => e.IDSerial)
+                .Property(e => e.IdSerial)
                 .HasPrecision(4, 0);
 
             modelBuilder.Entity<Requests>()
-                .Property(e => e.IDNumber)
+                .Property(e => e.IdNumber)
                 .HasPrecision(6, 0);
 
             modelBuilder.Entity<Requests>()
@@ -61,10 +61,6 @@ namespace WpfApp1.Models
                 .IsUnicode(false);
 
             modelBuilder.Entity<Users>()
-                .Property(e => e.WorkerCode)
-                .HasPrecision(7, 0);
-
-            modelBuilder.Entity<Users>()
                 .HasMany(e => e.Requests)
                 .WithRequired(e => e.Users)
                 .WillCascadeOnDelete(false);
@@ -72,6 +68,10 @@ namespace WpfApp1.Models
             modelBuilder.Entity<Workers>()
                 .Property(e => e.WorkerCode)
                 .HasPrecision(7, 0);
+
+            modelBuilder.Entity<Workers>()
+                .Property(e => e.Password)
+                .IsUnicode(false);
 
             modelBuilder.Entity<Workers>()
                 .Property(e => e.Name)
@@ -94,14 +94,8 @@ namespace WpfApp1.Models
                 .IsUnicode(false);
 
             modelBuilder.Entity<Workers>()
-                .HasMany(e => e.Requests)
-                .WithOptional(e => e.Workers)
-                .HasForeignKey(e => new { e.ID_Worker, e.WorkerCode });
-
-            modelBuilder.Entity<Workers>()
-                .HasMany(e => e.Users)
-                .WithOptional(e => e.Workers)
-                .HasForeignKey(e => new { e.ID_Worker, e.WorkerCode });
+                .Property(e => e.SecretWord)
+                .IsUnicode(false);
         }
     }
 }

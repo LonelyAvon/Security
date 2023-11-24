@@ -8,13 +8,12 @@ using System.Windows.Controls;
 using WpfApp1.Hash;
 using WpfApp1.Models;
 using System.Collections.Generic;
+using System.Net.Mime;
+using System.Text;
 
 namespace WpfApp1
 
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         MD5Hash MD5 = new MD5Hash();
@@ -25,78 +24,115 @@ namespace WpfApp1
             InitializeComponent();
             this.Loaded += MainWindow_Loaded;
         }
+        //Заполнение ComboBox ролями из базы данных
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            List<Workers> worker = await RolesGetAsync(Path);
-            foreach(var c in worker)
+            try
             {
-                UserType.Items.Add(c.Division);
+                List<Workers> worker = await RolesGetAsync(Path);
+                foreach (var c in worker)
+                {
+                    UserType.Items.Add(c.Division);
+                }
+            }
+            catch 
+            {
+                MessageBox.Show("Соединение с сервером не установлено");
+                this.Close(); 
             }
         }
         private async void AutoButton_Click(object sender, RoutedEventArgs e)
         {
-            Users first = new Users();
-            if (Login.Text != string.Empty)
-                if (Password.Password != string.Empty)
-                    if (UserType.Text != string.Empty)
-                        if (SecretWord.Text != string.Empty)
-                        {
-                            try
-                            {   if (UserType.Text =="Администрация"||UserType.Text=="Служба безопасности")
-                                    first.WorkerCode = Convert.ToDecimal(Login.Text);
-                                else
-                                {
-                                    first.Email = Login.Text;
-                                }
-                                //first.Password = MD5.GetHash(Password.Password);
-                                first.Password = Password.Password;
-                                Users user = await AutoAsync(first, Path);
-                                MessageBox.Show(user.ToString());
-                                if (user!=null)
-                                {
-                                    MessageBox.Show(user.Password);
-                                    switch (user.Workers.Division.ToString())
-                                    {
-                                        case "Администрация":
-                                            MessageBox.Show($"Вы вошли как {user.Workers.Division}");
-                                            Security security = new Security();
-                                            security.Show();
-                                            break;
-                                        case "Служба безопасности":
-                                            MessageBox.Show($"Вы вошли как {user.Workers.Division}");
-                                            break;
-                                        default:
-                                            MessageBox.Show("Вы вошли как обычный пользователь");
-                                            break;
-                                    }
-                                }
-                                else
-                                {
-                                    MessageBox.Show("Неправильный логин или пароль!");
-                                }
-                            }
-                            catch(Exception ex)
-                            {
-                                MessageBox.Show(ex.Message);
-                            }
-                        }
-            else
+            //Проверка на нулевые значения
+            if (UserType.Text == String.Empty)
             {
-                MessageBox.Show("Заполнены не все поля");
+                MessageBox.Show("Вы не ввели Тип пользователя!");
+                return;
             }
+            if (Login.Text == String.Empty)
+            {
+                MessageBox.Show("Вы не ввели логин!");
+                return;
+            }
+            if (Password.Password == String.Empty)
+            {
+                MessageBox.Show("Вы не ввели пароль");
+                return;
+            }
+            if (SecretWord.Text == string.Empty)
+            {
+                MessageBox.Show("Вы не ввели секретное слово");
+                return;
+            }
+
+
+            //Проверка кода сотрудника
+            decimal workerCode = 0;
+            try 
+            {
+                if (Login.Text.Length == 7)
+                    workerCode = decimal.Parse(Login.Text);
+                else
+                    return;
+            }
+            catch { MessageBox.Show("Введите код сотрудника правильно"); };
+            //Создание рабочего для авторизации из полученных данных
+            Workers first = new Workers()
+            {
+                WorkerCode = workerCode,
+                Password = Password.Password,
+                SecretWord = SecretWord.Text,
+
+            };
+            //Авторизация
+            var worker = await AutoWorkerAsync(Path, first);
+            if (worker!=null)
+            {
+                switch(worker.Division)
+                {
+                    case "Администрация":
+                        //проверка на идентичность роли в Типе пользователя
+                        if (worker.Division != UserType.Text)
+                        {
+                            MessageBox.Show("Выбран неверный тип пользователя!");
+                            break;
+                        }
+                        MessageBox.Show($"Вы зашли под аккаунтом {worker.Division}");
+                        Security admin = new Security();
+                        admin.Show();
+                        break;
+                    case "Служба безопасности":
+                        if (worker.Division != UserType.Text)
+                        {
+                            MessageBox.Show("Выбран неверный тип пользователя!");
+                            break;
+                        }
+                        MessageBox.Show($"Вы зашли под аккаунтом {worker.Division}");
+                        break;
+                    default:
+                        if (worker.Division != UserType.Text)
+                        {
+                            MessageBox.Show("Выбран неверный тип пользователя!");
+                            break;
+                        }
+                        MessageBox.Show($"Вы зашли под аккаунтом {worker.Division}");
+                        break;
+                }
+            }
+
         }
-        public async Task<Users> AutoAsync(Users found,string path)
+        // Метод отправки рабочего на авторизацию и получение полных данных о рабочем в случае успешной авторизации
+        public async Task<Workers> AutoWorkerAsync(string path, Workers work)
         {
             HttpResponseMessage response = await httpClient.PostAsJsonAsync
-            ($"{path}/Users/Auto/Security", found);
+            ($"{path}/Users/Auto/Security", work);
             string c = await response.Content.ReadAsStringAsync();
-            Users Autorizhation = JsonSerializer.Deserialize<Users>(c);
-
-            return Autorizhation;
+            Workers worker = JsonSerializer.Deserialize<Workers>(c);
+            return worker;
         }   
+        // Метод для заполнения Типов пользователей
         public static async Task<List<Workers>> RolesGetAsync(string path)
         {
-            
             HttpResponseMessage response = await httpClient.GetAsync($"{path}/Users/Get/Roles");
             string c = await response.Content.ReadAsStringAsync();
             List<Workers> a = JsonSerializer.Deserialize<List<Workers>>(c);

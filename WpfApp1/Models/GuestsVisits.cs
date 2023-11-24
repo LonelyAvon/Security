@@ -9,9 +9,9 @@ namespace WpfApp1.Models
     public partial class GuestsVisits
     {
         [Key]
-        public int ID_Visit { get; set; }
+        public int IdVisit { get; set; }
 
-        public int? ID_User { get; set; }
+        public int? IdUser { get; set; }
 
         public bool? FirstPass { get; set; }
 
