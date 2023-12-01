@@ -8,15 +8,18 @@ namespace WpfApp1.Models
     public partial class Model1 : DbContext
     {
         public Model1()
-            : base("name=Model11")
+            : base("name=Model13")
         {
         }
 
+        public virtual DbSet<C__EFMigrationsHistory> C__EFMigrationsHistory { get; set; }
         public virtual DbSet<GuestsVisits> GuestsVisits { get; set; }
         public virtual DbSet<Requests> Requests { get; set; }
+        public virtual DbSet<Roles> Roles { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<Workers> Workers { get; set; }
+        public virtual DbSet<WorkersPhoto> WorkersPhoto { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -52,6 +55,15 @@ namespace WpfApp1.Models
                 .Property(e => e.WorkerCode)
                 .HasPrecision(7, 0);
 
+            modelBuilder.Entity<Roles>()
+                .Property(e => e.Name)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Roles>()
+                .HasMany(e => e.Workers)
+                .WithOptional(e => e.Roles)
+                .HasForeignKey(e => e.Role);
+
             modelBuilder.Entity<Users>()
                 .Property(e => e.Email)
                 .IsUnicode(false);
@@ -83,10 +95,6 @@ namespace WpfApp1.Models
 
             modelBuilder.Entity<Workers>()
                 .Property(e => e.Patrynomic)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<Workers>()
-                .Property(e => e.Division)
                 .IsUnicode(false);
 
             modelBuilder.Entity<Workers>()

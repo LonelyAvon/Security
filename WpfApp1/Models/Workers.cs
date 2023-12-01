@@ -9,7 +9,6 @@ namespace WpfApp1.Models
     public partial class Workers
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int IdWorker { get; set; }
 
         [Column(TypeName = "numeric")]
@@ -29,13 +28,14 @@ namespace WpfApp1.Models
         [StringLength(30)]
         public string Patrynomic { get; set; }
 
-        [StringLength(30)]
-        public string Division { get; set; }
+        public int? Role { get; set; }
 
         [StringLength(30)]
         public string Depart { get; set; }
 
         [StringLength(50)]
         public string SecretWord { get; set; }
+
+        public virtual Roles Roles { get; set; }
     }
 }

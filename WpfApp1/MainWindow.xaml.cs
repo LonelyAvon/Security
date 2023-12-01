@@ -29,10 +29,10 @@ namespace WpfApp1
         {
             try
             {
-                List<Workers> worker = await RolesGetAsync(Path);
-                foreach (var c in worker)
+                List<Roles> role = await RolesGetAsync(Path);
+                foreach (var c in role)
                 {
-                    UserType.Items.Add(c.Division);
+                    UserType.Items.Add(c.Name);
                 }
             }
             catch 
@@ -88,25 +88,26 @@ namespace WpfApp1
             var worker = await AutoWorkerAsync(Path, first);
             if (worker!=null)
             {
+                Roles role = await WorkerAutoGetRoleAsync(Path, worker.Role);
                 //Проверка на правильность выбранной роли
-                if (worker.Division != UserType.Text)
+                if (worker.Role != role.IdRole)
                 {
                     MessageBox.Show("Выбран неверный тип пользователя!");
                     return;
                 }
-                switch(worker.Division)
+                switch (role.Name)
                 {
                     case "Администрация":
-                        MessageBox.Show($"Вы зашли под аккаунтом {worker.Division}");
+                        MessageBox.Show($"Вы зашли под аккаунтом {role.Name}");
                         Security admin = new Security();
                         admin.Show();
                         break;
                     case "Служба безопасности":
-                        MessageBox.Show($"Вы зашли под аккаунтом {worker.Division}");
+                        MessageBox.Show($"Вы зашли под аккаунтом {role.Name}");
                         break;
                     //Страница для остальных рабочих
                     default:
-                        MessageBox.Show($"Вы зашли под аккаунтом {worker.Division}");
+                        MessageBox.Show($"Вы зашли под аккаунтом {role.Name}");
                         break;
                 }
             }
@@ -122,12 +123,21 @@ namespace WpfApp1
             return worker;
         }   
         // Метод для заполнения Типов пользователей
-        public static async Task<List<Workers>> RolesGetAsync(string path)
+        public static async Task<List<Roles>> RolesGetAsync(string path)
         {
             HttpResponseMessage response = await httpClient.GetAsync($"{path}/Users/Get/Roles");
             string c = await response.Content.ReadAsStringAsync();
-            List<Workers> a = JsonSerializer.Deserialize<List<Workers>>(c);
+            List<Roles> a = JsonSerializer.Deserialize<List<Roles>>(c);
             return a;
+        }
+        // Для получения списка ролей
+        public static async Task<Roles> WorkerAutoGetRoleAsync(string path, int? IdRole)
+        {
+            HttpResponseMessage response = await httpClient.GetAsync
+            ($"{path}/Worker/Auto/Role/{IdRole}");
+            string c = await response.Content.ReadAsStringAsync();
+            Roles role = JsonSerializer.Deserialize<Roles>(c);
+            return role;
         }
     }
 }
