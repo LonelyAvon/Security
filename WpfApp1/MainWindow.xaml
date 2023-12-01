@@ -6,7 +6,7 @@
         WindowStartupLocation="CenterScreen"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="700">
+        Title="MainWindow" Height="450" Width="700" Closed="Window_Closed">
     <Grid RenderTransformOrigin="0.496,0.322">
         <TextBlock HorizontalAlignment="Left" Margin="154,63,0,0" TextWrapping="Wrap" Text="Тип пользователя" VerticalAlignment="Top" Height="25" Width="145" FontSize="16"/>
         <TextBlock HorizontalAlignment="Left" Margin="154,122,0,0" TextWrapping="Wrap" Text="Логин" VerticalAlignment="Top" Height="25" Width="50" FontSize="16"/>

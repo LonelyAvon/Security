@@ -23,6 +23,7 @@ namespace WpfApp1
         {
             InitializeComponent();
             this.Loaded += MainWindow_Loaded;
+        
         }
         //Заполнение ComboBox ролями из базы данных
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -41,6 +42,7 @@ namespace WpfApp1
                 this.Close(); 
             }
         }
+       
         private async void AutoButton_Click(object sender, RoutedEventArgs e)
         {
             //Проверка на нулевые значения
@@ -138,6 +140,11 @@ namespace WpfApp1
             string c = await response.Content.ReadAsStringAsync();
             Roles role = JsonSerializer.Deserialize<Roles>(c);
             return role;
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }

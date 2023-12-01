@@ -44,6 +44,12 @@ namespace WpfApp1
             var photo = await ImageGetAsync(1);
             byte[] qq = photo.Data;
             Photo.Source = LoadImage(qq);
+
+            List<Roles> role = await MainWindow.RolesGetAsync(MainWindow.Path);
+            foreach (var c in role)
+            {
+                UserType.Items.Add(c.Name);
+            }
         }
         private static BitmapImage LoadImage(byte[] imageData)
         {
@@ -79,7 +85,7 @@ namespace WpfApp1
                 MessageBox.Show("Вы не ввели Отчество");
                 return;
             }
-            if (Divison.Text == String.Empty)
+            if (UserType.Text == String.Empty)
             {
                 MessageBox.Show("Вы не ввели Должность");
                 return;
@@ -103,26 +109,20 @@ namespace WpfApp1
                 Depart = null,
                 Password = null,
             };
-            if (filename != null)
+
+            if (await WorkersPostAsync(MainWindow.Path, worker))
             {
-                if (await WorkersPostAsync(MainWindow.Path, worker))
-                {
-                    Workers cut = await MainWindow.AutoWorkerAsync(MainWindow.Path, worker);
-                    await ImagePostAsync(filename, cut.IdWorker);
-                    MessageBox.Show($"Пользователь добавлен");
-                    Name.Text = String.Empty;
-                    FirstName.Text = String.Empty;
-                    LastName.Text = String.Empty;
-                    Divison.Text = String.Empty;
-                }
-                else
-                {
-                    MessageBox.Show("Пользователь не был добавлен");
-                }
+                Workers cut = await MainWindow.AutoWorkerAsync(MainWindow.Path, worker);
+                await ImagePostAsync(filename, cut.IdWorker);
+                MessageBox.Show($"Пользователь добавлен");
+                Name.Text = String.Empty;
+                FirstName.Text = String.Empty;
+                LastName.Text = String.Empty;
+                UserType.Text = String.Empty;
             }
             else
             {
-                MessageBox.Show("Не выбрана фотография рабочего");
+                MessageBox.Show("Пользователь не был добавлен");
             }
         }
         public static async Task<bool> WorkersPostAsync(string path, Workers worker)
@@ -137,10 +137,15 @@ namespace WpfApp1
         private void PhotoDownload_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            if (openFileDialog1.ShowDialog() == DialogResult)
-                return;
-            filename = openFileDialog1.FileName;
 
+            openFileDialog1.Filter = "image|*.jpg|image|*.png|image|*.jpeg";
+
+            if (openFileDialog1.ShowDialog()==false)
+            {
+                MessageBox.Show("Не выбрана фотография");
+                return;
+            }
+            filename = openFileDialog1.FileName;
             Photo.Source = new BitmapImage(new Uri(filename, UriKind.Absolute));
         }
         public static async Task<WorkersPhoto> ImageGetAsync(int id)

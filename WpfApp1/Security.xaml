@@ -5,16 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="Security" Height="450" Width="800">
+        Title="Security" Height="450" Width="800" ResizeMode="NoResize">
     <Grid>
         <TextBlock HorizontalAlignment="Left" Margin="57,236,0,0" TextWrapping="Wrap" Text="Пол" VerticalAlignment="Top" Height="31" Width="182" FontSize="16"/>
         <ComboBox x:Name="Gender" Margin="320,229,407,0" VerticalAlignment="Top" AutomationProperties.IsColumnHeader="True" IsReadOnly="True" Height="43" FontSize="20">
             <TextBlock><Run Text="М"/></TextBlock>
             <TextBlock><Run Text="Ж"/></TextBlock>
         </ComboBox>
+        <ComboBox x:Name="UserType" HorizontalAlignment="Left" Margin="320,282,0,0" VerticalAlignment="Top" Width="224" AutomationProperties.IsColumnHeader="True" IsReadOnly="True" Height="35">
+        </ComboBox>
         <Button x:Name="SaveButton" Content="Сохранить" HorizontalAlignment="Left" Margin="199,361,0,0" VerticalAlignment="Top" Width="176" FontSize="16" Height="30" Click="SaveButton_Click"/>
         <TextBlock HorizontalAlignment="Left" Margin="57,298,0,0" TextWrapping="Wrap" Text="Должность " VerticalAlignment="Top" Height="30" Width="181" FontSize="16"/>
-        <TextBox x:Name="Divison" HorizontalAlignment="Left" Height="44" Margin="320,289,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="224"/>
         <TextBlock HorizontalAlignment="Left" Margin="57,65,0,0" TextWrapping="Wrap" Text="Фамилия" VerticalAlignment="Top" Height="30" Width="94" FontSize="16"/>
         <TextBlock HorizontalAlignment="Left" Margin="57,124,0,0" TextWrapping="Wrap" Text="Имя" VerticalAlignment="Top" Height="32" Width="77" FontSize="16"/>
         <TextBlock HorizontalAlignment="Left" Margin="57,182,0,0" TextWrapping="Wrap" Text="Отчество" VerticalAlignment="Top" Height="30" Width="181" FontSize="16"/>
