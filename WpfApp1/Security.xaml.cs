@@ -27,11 +27,14 @@ using System.Runtime.InteropServices.ComTypes;
 using Xamarin.Forms.Shapes;
 using Microsoft.Win32;
 using Path = System.IO.Path;
+using System.Runtime.InteropServices;
 
 namespace WpfApp1
 {
+    
     public partial class Security : Window
     {
+        List<Roles> k;
         MainWindow MainWindow = new MainWindow();
         string filename = null;
         public Security()
@@ -39,34 +42,20 @@ namespace WpfApp1
             InitializeComponent();
             this.Loaded += Security_Loaded;
         }
+        string sourceLogo = Path.GetFullPath("def\\logo.png");
+
+        //Метод вызываемый при загрузке формы
         private async void Security_Loaded(object sender, RoutedEventArgs e)
         {
-            var photo = await ImageGetAsync(1);
-            byte[] qq = photo.Data;
-            Photo.Source = LoadImage(qq);
+            Photo.Source = new BitmapImage(new Uri(sourceLogo));
 
+            //Получение всех ролей из базы и добавление их в ComboBox
             List<Roles> role = await MainWindow.RolesGetAsync(MainWindow.Path);
+            k = role;
             foreach (var c in role)
             {
                 UserType.Items.Add(c.Name);
             }
-        }
-        private static BitmapImage LoadImage(byte[] imageData)
-        {
-            if (imageData == null || imageData.Length == 0) return null;
-            var image = new BitmapImage();
-            using (var mem = new MemoryStream(imageData))
-            {
-                mem.Position = 0;
-                image.BeginInit();
-                image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-                image.CacheOption = BitmapCacheOption.OnLoad;
-                image.UriSource = null;
-                image.StreamSource = mem;
-                image.EndInit();
-            }
-            image.Freeze();
-            return image;
         }
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
@@ -98,18 +87,31 @@ namespace WpfApp1
 
             Random random = new Random();
 
+            //Получение Id роли для создания объекта класса Worker
+            int c = 1;
+            foreach(var roles in k)
+            {
+                if(roles.Name==UserType.Text)
+                {
+                    c = roles.IdRole;
+                    break;
+                }
+            }
+
+            //Создание рабочего для вставки в базу данных
             Workers worker = new Workers()
             {
                 WorkerCode = random.Next(1000000, 9999999),
                 Name = Name.Text,
                 Surname = FirstName.Text,
                 Patrynomic = LastName.Text,
-                Role = null,
+                Role = c,
                 SecretWord = null,
                 Depart = null,
                 Password = null,
             };
 
+            // очистка полей
             if (await WorkersPostAsync(MainWindow.Path, worker))
             {
                 Workers cut = await MainWindow.AutoWorkerAsync(MainWindow.Path, worker);
@@ -119,6 +121,7 @@ namespace WpfApp1
                 FirstName.Text = String.Empty;
                 LastName.Text = String.Empty;
                 UserType.Text = String.Empty;
+                Photo.Source = new BitmapImage(new Uri(sourceLogo));
             }
             else
             {
@@ -148,12 +151,6 @@ namespace WpfApp1
             filename = openFileDialog1.FileName;
             Photo.Source = new BitmapImage(new Uri(filename, UriKind.Absolute));
         }
-        public static async Task<WorkersPhoto> ImageGetAsync(int id)
-        {
-            string image = await MainWindow.httpClient.GetStringAsync($"{MainWindow.Path}/Workers/Photo/Get/{id}");
-            var photo = JsonSerializer.Deserialize<WorkersPhoto>(image);
-            return photo;
-        }
         public static async Task<WorkersPhoto> ImagePostAsync(string filename,int id)
         {
             byte[] buffer = File.ReadAllBytes(filename);
@@ -165,6 +162,11 @@ namespace WpfApp1
             string c = await response.Content.ReadAsStringAsync();
             var photo = JsonSerializer.Deserialize<WorkersPhoto>(c);
             return photo;
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            System.Windows.Application.Current.Shutdown();
         }
     }
 }

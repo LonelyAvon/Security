@@ -88,30 +88,36 @@ namespace WpfApp1
             };
             //Авторизация
             var worker = await AutoWorkerAsync(Path, first);
-            if (worker!=null)
+
+            if (worker==null)
             {
-                Roles role = await WorkerAutoGetRoleAsync(Path, worker.Role);
-                //Проверка на правильность выбранной роли
-                if (worker.Role != role.IdRole)
-                {
-                    MessageBox.Show("Выбран неверный тип пользователя!");
-                    return;
-                }
-                switch (role.Name)
-                {
-                    case "Администрация":
-                        MessageBox.Show($"Вы зашли под аккаунтом {role.Name}");
-                        Security admin = new Security();
-                        admin.Show();
-                        break;
-                    case "Служба безопасности":
-                        MessageBox.Show($"Вы зашли под аккаунтом {role.Name}");
-                        break;
-                    //Страница для остальных рабочих
-                    default:
-                        MessageBox.Show($"Вы зашли под аккаунтом {role.Name}");
-                        break;
-                }
+                MessageBox.Show("Неправильный логин или пароль");
+                return;
+            }
+
+            Roles role = await WorkerAutoGetRoleAsync(Path, worker.Role);
+            //Проверка на правильность выбранной роли
+            if (worker.Role != role.IdRole)
+            {
+                MessageBox.Show("Выбран неверный тип пользователя!");
+                return;
+            }
+            switch (role.Name)
+            {
+                case "Администрация":
+                    MessageBox.Show($"Вы зашли под аккаунтом {role.Name}");
+                    Security admin = new Security();
+                    admin.Show();
+                    break;
+                case "Служба безопасности":
+                    MessageBox.Show($"Вы зашли под аккаунтом {role.Name}");
+                    Safety safe = new Safety();
+                    safe.Show();
+                    break;
+                //Страница для остальных рабочих
+                default:
+                    MessageBox.Show($"Вы зашли под аккаунтом {role.Name}");
+                    break;
             }
 
         }
@@ -145,6 +151,13 @@ namespace WpfApp1
         private void Window_Closed(object sender, EventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void RegisterButton_Click(object sender, RoutedEventArgs e)
+        {
+            Recovery rec = new Recovery();
+            this.Hide();
+            rec.Show();
         }
     }
 }
